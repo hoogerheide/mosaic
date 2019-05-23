@@ -34,7 +34,7 @@ class MultipleChannelError(Exception):
 	pass
 
 
-def abfload_gp(filename):
+def abfload_gp(filename, ch=0):
 	header = read_header(filename)
 	version = header['fFileVersionNumber']
 
@@ -89,8 +89,8 @@ def abfload_gp(filename):
 	# Check for either gap free or event driven fixed-length modes
 	if mode not in [3, 5]:
 		raise InvalidModeError("Only gap-free (3) and event driven fixed length (5) modes are currently supported")
-	if nbchannel != 1:
-		raise MultipleChannelError('Data from more than one channel is not currently supported')
+	#if nbchannel != 1:
+	#	raise MultipleChannelError('Data from more than one channel is not currently supported')
 
 	# gap free mode
 	m = data.size%nbchannel
@@ -108,7 +108,7 @@ def abfload_gp(filename):
 	elif version >=2. :
 		freq = 1.e6/header['protocol']['fADCSequenceInterval']
 
-	return [freq, header['fFileSignature'], bandwidth, gain, data[:,0]]
+	return [freq, header['fFileSignature'], bandwidth, gain, data[:,ch]]
 
 def read_header(filename):
 	"""
